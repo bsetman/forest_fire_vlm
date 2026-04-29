@@ -12,11 +12,6 @@ Default mode:
   Uses GPTsAPI OpenAI-compatible endpoint:
     https://api.gptsapi.net/v1/chat/completions
 
-Optional Gemini native mode:
-  --api-mode gemini-native
-  Uses GPTsAPI Gemini endpoint style:
-    https://api.gptsapi.net/v1beta/models/gemini-2.5-flash:generateContent
-
 Input JSONL examples:
   {"id", "image_name", "image_path", "split", "prompt", "gold"}
   {"messages", "images"}
