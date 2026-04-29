@@ -1,0 +1,44 @@
+# Qwen3-VL-2B-Instruct LoRA/QLoRA fine-tuning configuration
+
+model: Qwen/Qwen3-VL-2B-Instruct
+use_hf: true
+
+dataset: /mnt/d/Abiyelunwen/new_fire_vlm/data/qwen3vl/train_qwen3vl.jsonl
+val_dataset: /mnt/d/Abiyelunwen/new_fire_vlm/data/qwen3vl/val_qwen3vl.jsonl
+output_dir: /mnt/d/Abiyelunwen/new_fire_vlm/outputs/qwen3vl_2b_lora
+
+# Fine-tuning method
+tuner_type: lora
+quant_bits: 4
+torch_dtype: float16
+
+# Training hyperparameters
+num_train_epochs: 3
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1
+gradient_accumulation_steps: 16
+learning_rate: 1.0e-4
+warmup_ratio: 0.03
+max_length: 1024
+
+# LoRA parameters
+lora_rank: 4
+lora_alpha: 8
+target_modules: all-linear
+
+# Freezing strategy
+freeze_vit: true
+freeze_aligner: true
+
+# Memory optimization
+gradient_checkpointing: true
+image_max_token_num: 512
+pytorch_cuda_alloc_conf: expandable_segments:True
+cuda_visible_devices: "0"
+
+# Evaluation / saving / logging
+eval_steps: 50
+save_steps: 50
+save_total_limit: 2
+logging_steps: 5
+log_file: /mnt/d/Abiyelunwen/new_fire_vlm/outputs/qwen3vl_2b_lora/train.log

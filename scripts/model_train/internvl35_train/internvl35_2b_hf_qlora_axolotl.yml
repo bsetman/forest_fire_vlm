@@ -1,0 +1,88 @@
+# InternVL3.5-2B-HF QLoRA training config for Axolotl.
+# Uses existing Axolotl-format JSONL files:
+#   data/internvl35/train_internvl35_axolotl.jsonl
+#   data/internvl35/val_internvl35_axolotl.jsonl
+
+base_model: OpenGVLab/InternVL3_5-2B-HF
+base_model_config: OpenGVLab/InternVL3_5-2B-HF
+tokenizer_config: OpenGVLab/InternVL3_5-2B-HF
+# Keep this field; if your Axolotl version supports it, it prevents processor_config=None.
+processor_config: OpenGVLab/InternVL3_5-2B-HF
+trust_remote_code: true
+
+# Multimodal settings required by Axolotl VLM training.
+processor_type: AutoProcessor
+skip_prepare_dataset: true
+remove_unused_columns: false
+sample_packing: false
+
+# Existing dataset files. They already use messages/content with {type: image, path: ...} and {type: text, text: ...}.
+datasets:
+  - path: /mnt/d/Abiyelunwen/new_fire_vlm/data/internvl35/train_internvl35_axolotl.jsonl
+    type: chat_template
+    chat_template: tokenizer_default
+    message_property_mappings:
+      role: role
+      content: content
+
+test_datasets:
+  - path: /mnt/d/Abiyelunwen/new_fire_vlm/data/internvl35/val_internvl35_axolotl.jsonl
+    type: chat_template
+    chat_template: tokenizer_default
+    message_property_mappings:
+      role: role
+      content: content
+
+# Keep close to your previous Qwen3-VL LoRA settings.
+sequence_len: 1024
+num_epochs: 3
+micro_batch_size: 1
+eval_batch_size: 1
+gradient_accumulation_steps: 16
+learning_rate: 0.0001
+warmup_ratio: 0.03
+logging_steps: 5
+eval_steps: 50
+save_steps: 50
+save_total_limit: 2
+
+# Axolotl run output. The shell script copies the final adapter to:
+# outputs/adapters/internvl35_2b_hf_qlora_adapter
+output_dir: /mnt/d/Abiyelunwen/new_fire_vlm/outputs/internvl35_2b_hf_qlora
+
+# QLoRA / 4bit settings.
+adapter: qlora
+load_in_4bit: true
+load_in_8bit: false
+bnb_4bit_quant_type: nf4
+bnb_4bit_use_double_quant: true
+bnb_4bit_compute_dtype: float16
+
+# Match Qwen LoRA rank/alpha.
+lora_r: 4
+lora_alpha: 8
+lora_dropout: 0.05
+
+# Freeze vision side; train language-side LoRA only.
+freeze_mm_modules: true
+lora_target_modules: 'model.language_model.layers.[\d]+.(mlp|cross_attn|self_attn).(up|down|gate|q|k|v|o)_proj'
+
+# Precision / memory.
+fp16: true
+bf16: false
+tf32: true
+gradient_checkpointing: true
+
+# Conservative image settings for RTX 4060 Laptop 8GB.
+image_size: 448
+image_resize_algorithm: bilinear
+
+# Optimizer.
+optimizer: paged_adamw_8bit
+lr_scheduler: cosine
+weight_decay: 0.0
+
+# Stability.
+seed: 42
+strict: false
+generate_samples: false
