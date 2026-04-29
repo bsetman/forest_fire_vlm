@@ -24,18 +24,18 @@ Output predictions JSONL:
 
 Examples:
   # Qwen3-VL LoRA
-  python scripts/predict_structured_fire_unified.py \
+  python scripts/predict_structured_local.py \
     --backend qwen3vl \
     --model Qwen/Qwen3-VL-2B-Instruct \
-    --adapter /mnt/d/Abiyelunwen/new_fire_vlm/models/qwen3vl_2b_lora_best \
+    --adapter /mnt/d/Abiyelunwen/new_fire_vlm/models/qwen3vl_2b_lora_adapter \
     --test-jsonl /mnt/d/Abiyelunwen/new_fire_vlm/data/test_eval.jsonl \
     --out /mnt/d/Abiyelunwen/new_fire_vlm/outputs/predictions/qwen3vl_lora_predictions.jsonl
 
   # InternVL3.5 HF LoRA / QLoRA adapter
-  python scripts/predict_structured_fire_unified.py \
+  python scripts/predict_structured_local.py \
     --backend internvl35 \
-    --model /home/swh/.cache/huggingface/hub/models--OpenGVLab--InternVL3_5-2B-HF/snapshots/<snapshot_id> \
-    --adapter /mnt/d/Abiyelunwen/new_fire_vlm/outputs/internvl35_qlora/final \
+    --model OpenGVLab/InternVL3_5-2B-HF \
+    --adapter /mnt/d/Abiyelunwen/new_fire_vlm/models/internvl3_5_2b_qlora_adapter \
     --test-jsonl /mnt/d/Abiyelunwen/new_fire_vlm/data/test_eval.jsonl \
     --out /mnt/d/Abiyelunwen/new_fire_vlm/outputs/predictions/internvl35_lora_predictions.jsonl
 """
