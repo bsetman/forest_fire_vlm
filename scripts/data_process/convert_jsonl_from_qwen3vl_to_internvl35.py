@@ -10,7 +10,7 @@ It creates two formats:
    {"id":"...","image":"...","conversations":[{"from":"human","value":"<image>\n..."}, ...]}
 
 Recommended for this project:
-- Use Axolotl format for QLoRA on a single RTX 4060 Laptop 8GB.
+- Use Axolotl format for QLoRA .
 - Keep prompt and target text identical to Qwen as much as possible.
 """
 
