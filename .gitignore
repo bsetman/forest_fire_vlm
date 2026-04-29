@@ -12,4 +12,3 @@ venv/
 
 wandb/
 runs/
-logs/
