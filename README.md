@@ -517,23 +517,37 @@ These files are intended for unified comparison across zero-shot, fine-tuned, an
 
 ## Evaluation Strategy
 
-The recommended evaluation is field-wise comparison between `gold` and `pred`:
+The evaluation strategy follows the experimental design used in the thesis. All models are evaluated on the same unified test set of 300 images, using the same structured-output prompt and the same four target fields:
 
-- `Smoke` accuracy
-- `Fire` accuracy
-- `Fire_Size` accuracy
-- `Fire_Hotspots` accuracy
-- exact-match accuracy across all four fields
-- JSON validity rate
-- qualitative error analysis
+- `Smoke`
+- `Fire`
+- `Fire_Size`
+- `Fire_Hotspots`
 
-Important error categories include:
+The evaluated model groups are:
 
-- fire missed by the model;
-- fire hallucinated when no fire is visible;
-- smoke detected but fire size incorrectly inferred;
-- one hotspot confused with multiple hotspots;
-- invalid or non-JSON output.
+- Qwen3-VL zero-shot
+- Qwen3-VL fine-tuned
+- InternVL3.5 zero-shot
+- InternVL3.5 fine-tuned
+- GPT-4.1 mini
+- Gemini 2.5 Flash
+
+For each model, predictions are generated and stored as JSONL files. The raw model output is first parsed to extract a valid JSON object. Since VLMs may sometimes generate Markdown code blocks, explanatory text, invalid JSON, or unsupported label values, the evaluation pipeline also performs field normalization and records parsing failures. Samples that cannot be parsed into a valid structured prediction are treated as structured-output failures.
+
+The main comparison is performed between the normalized prediction field `pred` and the manually annotated reference field `gold`. No model self-evaluation is used. The manual annotations are treated as the ground-truth labels.
+
+The evaluation treats `Smoke` and `Fire` as binary classification fields, while `Fire_Size` and `Fire_Hotspots` are treated as multi-class classification fields. The final metrics include:
+
+- field-wise accuracy for `Smoke`;
+- field-wise accuracy for `Fire`;
+- field-wise accuracy for `Fire_Size`;
+- field-wise accuracy for `Fire_Hotspots`;
+- precision, recall, and F1-score for the binary fields `Smoke` and `Fire`;
+- mean field accuracy across the four structured fields;
+- exact-match accuracy across all four fields.
+
+The exact-match metric is considered especially important because it measures whether the model correctly predicts the complete structured annotation for an image, rather than only individual fields.
 
 ---
 
